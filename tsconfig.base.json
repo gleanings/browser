@@ -1,0 +1,32 @@
+ {
+      "compilerOptions": {
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true, // 设定为 true 时，模块没有指定显式的默认导出，允许 `import React from "react";` 而不是 `import * as React from "react";`
+        "declaration": false, // 生成 .d.ts 类型声明文件
+        // "declarationDir": "dist", // 类型声明文件输出目录
+        "esModuleInterop": true, // 兼容 CommonJS/ES Module
+        "experimentalDecorators": true, // 启用装饰器
+        "forceConsistentCasingInFileNames": true, // 机器适配
+        "importHelpers": false, // 关键：禁用 tslib 导入
+        "incremental": false, // 增量生成（嗯，不适用于经常 rm dist 场景）
+        "isolatedModules": true,
+        "jsx": "react-jsx", // React 17+ 的 JSX 转换（无需显式导入 React）
+        "jsxImportSource": "react", // 指定 JSX 导入源
+        "module": "esnext", // 模块系统（ES Module）
+        "moduleResolution": "bundler", // 模块解析策略（适用于打包工具）
+        "noEmit": true, // 确保 TypeScript 不生成任何 JS
+        "noEmitOnError": false, // 禁止编译器生成文件
+        "noUnusedLocals": false, // 未使用的块变量
+        "noUnusedParameters": false, // 未使用的参数
+        "resolveJsonModule": true, // 解析 JSON 模块
+        "rootDir": ".", // 源码根目录
+        "skipLibCheck": true, // 跳过第三方库类型检查（加速编译）
+        "sourceMap": false, //
+        "strict": true, // 开启严格模式（推荐）
+        "target": "ESNext", // 目标 JS 版本（现代浏览器/工具支持）
+        "verbatimModuleSyntax": true, // TS 5.0 + 推荐：强制 type 导入
+        "preserveSymlinks": true, // 推荐 pnpm 用户添加
+        "lib": ["DOM", "DOM.Iterable", "ESNext", "es5"]
+      }
+    }
+    

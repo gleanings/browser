@@ -1,0 +1,314 @@
+const fn = {
+  copyText(text: string) {
+    const { clipboard } = navigator;
+    /** 新式写法 */
+    if (clipboard && clipboard.writeText) {
+      clipboard.writeText(text);
+    } else if ((window as any).clipboardData) {
+      /*IE 大哥*/
+      (window as any).clipboardData.clearData();
+      (window as any).clipboardData.setData('Text', text);
+    } else if (document.execCommand) {
+      /*  旧式写法*/
+      const hover = document.createElement('input');
+      hover.value = text;
+      document.body.appendChild(hover);
+      hover.select();
+      document.execCommand('Copy');
+      hover.className = 'hover';
+      hover.style.display = 'none';
+    }
+  },
+
+  tendTiZero(data: number, step: number = 1) {
+    if (data > step) return data - step;
+    else if (-data > step) return data + step;
+    else return 0;
+  },
+};
+/**  插入排序 */
+function insertSortFunction(arr: any[], asc: boolean = true): number {
+  let cum = 0,
+    l = arr.length; // 定义交换数据次数
+  if (l > 1)
+    // 如果数据长度效益 1 直接返回
+    for (
+      let i = 1;
+      i < l;
+      i++ // 最外层比对第 i 个元素
+    )
+      for (let m = i + 1; --m; ) {
+        // 内层将数据前移，向前比对
+        if ((asc && arr[m] < arr[m - 1]) || (!asc && arr[m] > arr[m - 1]))
+          // 前面已经排好队了，如果大于前面就可以直接退出内循环
+          (arr[m] = [arr[m - 1], (arr[m - 1] = arr[m])][0]), cum++;
+        // 数据交换，并增加计数器
+        else break;
+      }
+  return cum;
+}
+/** 希尔排序 */
+function shellSortFunction(arr: any[], asc: boolean = true): any {
+  let cum = 0,
+    l = arr.length;
+  if (l > 1)
+    //  拿到一半的位置 ,将这个值作为每次折中的去取值
+    for (let i = Math.floor(l / 2); i > 0; i = Math.floor(i / 2))
+      // 定义区间变量，从这个变量开始排序
+      for (let j = i; j < l; j += i)
+        // 与前面进行比较
+        for (
+          let m = j - i;
+          m >= 0 &&
+          ((asc && arr[m] > arr[i + m]) || (!asc && arr[m] < arr[i + m]));
+          m -= i
+        )
+          (arr[m] = [arr[i + m], (arr[i + m] = arr[m])][0]), cum++; // 替换元素并计数器自增
+  return cum;
+}
+
+/** 归并排序 */
+function mergeSortFunction(arr: any, cumNum: number = 0): any {
+  let cum = { cum: cumNum }; // 计数器
+  if (arr.length < 2)
+    // 当分到最后，直接返回元素本身
+    return [0, arr];
+  var middle = Math.floor(arr.length / 2), // 数值中值
+    left = arr.slice(0, middle), // 数组左一半
+    right = arr.slice(middle); //  数组右一半
+  const result = [],
+    [leftCum, leftTemp] = mergeSortFunction(left, cum.cum),
+    [rightCum, rightTemp] = mergeSortFunction(right, cum.cum); // 每次的结果
+  cum.cum = cum.cum + leftCum + rightCum; // 计数器
+  while (leftTemp.length > 0 && rightTemp.length > 0)
+    // 两个数组必须都有元素才可以比对
+    result.push(
+      leftTemp[0] < rightTemp[0] ? leftTemp.shift() : rightTemp.shift(),
+    ), // 排序交换数据
+      cum.cum++; // 计数器自增
+  arr = result.concat(leftTemp).concat(rightTemp); // 给数组复制
+  return [cum.cum, arr]; // 返回计数器和数组
+}
+
+/** 快速排序
+ *
+ *  每次将数组以特定元素分开
+ *  分成两部分 （相当于把这个值放到了正确位置）
+ *  下次以左右继续开始
+ */
+function quickSortFunction(arr: any, asc: boolean = true) {
+  const cum = { cum: 0 };
+  const _sort = (
+    arr: any,
+    left: number = 0,
+    right: number = arr.length - 1,
+  ) => {
+    if (left >= right) return; //如果左边的索引大于等于右边的索引说明整理完毕
+    let i = left,
+      j = right;
+    const baseVal = arr[j]; // 取无序数组最后一个数为基准值
+    while (i < j) {
+      //把所有比基准值小的数放在左边大的数放在右边
+      while (
+        i < j &&
+        ((asc && arr[i] <= baseVal) || (!asc && arr[i] >= baseVal))
+      )
+        i++; //找到一个比基准值大的数交换
+      (arr[j] = arr[i]), cum.cum++; // 将较大的值放在右边如果没有比基准值大的数就是将自己赋值给自己（i 等于 j）
+      while (
+        j > i &&
+        ((asc && arr[j] >= baseVal) || (!asc && arr[i] <= baseVal))
+      )
+        j--; //找到一个比基准值小的数交换
+      (arr[i] = arr[j]), cum.cum++; // 将较小的值放在左边如果没有找到比基准值小的数就是将自己赋值给自己（i 等于 j）
+    }
+    arr[j] = baseVal; // 将基准值放至中央位置完成一次循环（这时候 j 等于 i ）
+    cum.cum++;
+    _sort(arr, left, j - 1); // 将左边的无序数组重复上面的操作
+    _sort(arr, j + 1, right); // 将右边的无序数组重复上面的操作
+  };
+
+  //  arr.concat() // 为了保证这个函数是纯函数拷贝一次数组
+  _sort(arr);
+  return [cum.cum, arr];
+}
+
+/** 冒泡排序
+ *   每次将最大的拍到最前
+ *   或将最小的放到最后
+ */
+function bubbleSortFunction(arr: any, asc: boolean = true) {
+  let length = arr.length + 1,
+    cum = 0; // 定义两个变量，一个是数组长度，一个是
+  while (--length)
+    // 从最长开始
+    for (
+      let j = 0;
+      j < length;
+      j++ // 比较每一轮
+    )
+      if ((asc && arr[j] > arr[j + 1]) || (!asc && arr[j] < arr[j + 1]))
+        // 如果大就放后面，一轮结束
+        ([arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]), cum++;
+  return cum;
+}
+/** 选择排序 */
+function selectSortFunction(arr: any, asc: boolean = true) {
+  let cum = 0,
+    length = arr.length; // 定义计数器
+  if (length < 2) return cum;
+  for (let i = 0; i < length; i++) {
+    let minIndex = i; // 假设当前为最小值下标
+    for (let j = i + 1; j < length; j++)
+      if ((asc && arr[minIndex] > arr[j]) || (!asc && arr[minIndex] < arr[j]))
+        // 如果有新的最小值，将重制最小值下标
+        minIndex = j;
+    if (i != minIndex)
+      ([arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]), cum++; // 如果两个值不想等则交换位置
+  }
+  return cum;
+}
+
+/**  基数排序
+ *  将数据放入对应的桶内，然后直接使用 concent 连接
+ */
+function radixSortFunction(arr: any) {
+  let cum = 0,
+    length = arr.length - 1,
+    minEle = arr[0],
+    maxEle = arr[length],
+    minEleLength = 0,
+    maxEleLength;
+  if (length < 1) return cum; // 仅有一个元素或没有元素则直接返回
+  for (let i of arr) {
+    if (i) {
+      if (i < minEle)
+        minEle = i; // 找出最小值
+      else if (i > maxEle) maxEle = i; // 找到最大值
+    }
+  }
+  if (minEle == maxEle) return cum; // 如果数组内所有的值都相等
+  minEleLength = minEle.toString().length; // 初始化最小值长度
+  maxEleLength = maxEle.toString().length; // 初始化最大值长度
+
+  const _sort = (arr: any, digit: number) => {
+    const _tempArr: any = []; // 设定临时长度的
+    let _result: any = []; // 结果数组
+    for (let i = 10; i--; ) _tempArr.push([]); // 初始化临时数组
+    for (let i of arr) _tempArr[_getNum(i, digit)].push(i); //放入对应的 🪣 中
+    for (let i = 0; i < 10; i++) _result = _result.concat(_tempArr[i]); // 将 🪣 中数据重新装起来
+    return _result.concat(); // 将值给结果
+  };
+  const _getNum = (num: number, digit: number) =>
+    Number(num.toString().split('').reverse()[digit - 1]) || 0; // 获取指定位数的数值
+  for (let i = minEleLength; i <= maxEleLength; i++)
+    (arr = _sort(arr, i)), // 排序
+      cum++; // 计数器自增
+  return cum;
+}
+
+/** 堆排序 */
+function heapSortFunction(arr: any, asc: boolean = true) {
+  let length = arr.length, // 数组长度
+    index = length - 1, // 数组最大下标
+    cum = 0; //计数器
+  for (
+    let k = Math.floor(length / 2);
+    k >= 0;
+    --k // 创建堆
+  )
+    _sink(arr, k, index); // 小数字下沉（后排）
+  while (index) {
+    // 开始排序
+    [arr[0], arr[index]] = [arr[index], arr[0]]; // 交换元素，将最值元素放置末端
+    _sink(arr, 0, --index); // 小数字下沉（后排）
+  }
+  function _sink(arr: any, low: number, high: number) {
+    // 从 low 开始查找子节点
+    while (low * 2 + 1 <= high) {
+      // 当本次比对数组中最小下标满足小雨最大下标一半时
+      let j: any = low * 2 + 1; // 获取 low 得直接左子节点
+      cum++;
+      if (asc) {
+        if (j < high && arr[j] < arr[j + 1]) j++; // 判断  low 位置中子节点中较大的子节点
+        if (arr[low] > arr[j]) break;
+      } else {
+        if (j < high && arr[j] > arr[j + 1]) j++; // 判断  low 位置中子节点中较大的子节点
+        if (arr[low] < arr[j]) break;
+      }
+      [arr[low], arr[j]] = [arr[j], arr[low]]; // 交换 low 节点和子节点的值
+      low = j; // 继续排查下沉后是否需要继续下沉
+    }
+  }
+  return [cum, arr];
+}
+
+// 计数排序
+function countSortFunction(arr: any, asc: boolean = true) {
+  let cum = 0;
+  const result: any = [];
+  for (let i = 0, j = arr.length; i < j; i++) {
+    // 开始计数
+    let m = arr.pop();
+    cum++;
+    result[m] = result[m] ? result[m] + 1 : 1;
+  }
+  for (const i in result) {
+    let j = result[i];
+    while (j--) arr.push(i), cum++; // 放置数据
+  }
+  return cum;
+}
+
+/** 滚动到顶部
+ *
+ * Ele 滚动元素
+ *
+ * top 滚动到位置
+ *
+ *
+ */
+function scrollToTop(Ele: any, top: number = 0) {
+  const step = Math.abs((Ele.current as any).scrollTop - top) / 15;
+  const up = (Ele.current as any).scrollTop - top > 0;
+  const __scroll = () => {
+    setTimeout(() => {
+      if ((Ele.current as any).scrollTop - top > 0 && up) {
+        (Ele.current as any).scrollTop -= step;
+        __scroll();
+      } else if ((Ele.current as any).scrollTop - top < 0 && !up) {
+        (Ele.current as any).scrollTop += step;
+        __scroll();
+      } else (Ele.current as any).scrollTop = top;
+    }, 10);
+  };
+  __scroll();
+}
+
+function getQuery(str: string) {
+  const res: { [x: string]: string | number | boolean } = {};
+  if (str.length < 2) return res;
+  str = decodeURIComponent(str.slice(1));
+  const arr = str.split('&');
+  for (const i in arr) {
+    const j = arr[i].split('=');
+    res[j[0]] = j[1];
+  }
+  return res;
+}
+
+export {
+  insertSortFunction,
+  shellSortFunction,
+  mergeSortFunction,
+  quickSortFunction,
+  bubbleSortFunction,
+  selectSortFunction,
+  radixSortFunction,
+  heapSortFunction,
+  countSortFunction,
+  scrollToTop,
+  getQuery,
+};
+export const { copyText, tendTiZero } = fn;
+export default fn;
