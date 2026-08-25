@@ -21,3 +21,5 @@ export {
   matchMediaSome,
   matchMediaSomeState,
 } from './is-dark';
+
+export { Storage } from './storage';
