@@ -114,12 +114,12 @@ packageJson = {
   homepage: 'https://npm.lmssee.com/browser',
   dependencies: dependencies,
   bugs: {
-    url: 'https://github.com/MrMudBean/browser/issues',
+    url: 'https://github.com/gleanings/browser/issues',
     email: 'Mr.MudBean@outlook.com',
   },
   repository: {
     type: 'git',
-    url: 'git+https://github.com/MrMudBean/browser.git',
+    url: 'git+https://github.com/gleanings/browser.git',
   },
   publishConfig: {
     access: 'public',
