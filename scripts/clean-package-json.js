@@ -111,7 +111,7 @@ packageJson = {
     ...exportsList,
   },
   keywords: ['browser', 'vvi', 'mudbean'],
-  homepage: 'https://npm.lmssee.com/browser',
+  homepage: 'https://npms.gleanings.cn/browser',
   dependencies: dependencies,
   bugs: {
     url: 'https://github.com/gleanings/browser/issues',

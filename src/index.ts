@@ -23,3 +23,5 @@ export {
 } from './is-dark';
 
 export { Storage } from './storage';
+
+export { setStyle, removeStyle } from './inline-style';
